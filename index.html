@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ReBoRn Growth Desk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12284a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Growth Desk">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/reborn-icon-64.png">
+<link rel="apple-touch-icon" href="icons/reborn-icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f2f5f9; --surface:#ffffff; --ink:#14213a; --muted:#566178; --line:#d6dde8;
+  --navy:#12284a; --gold:#b88a12; --goldbg:#f6ecc9; --ok:#1f7a5c; --bad:#b3402e; --chip:#e8edf5;
+  --on-navy:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c182b; --surface:#13233d; --ink:#e8eef7; --muted:#9aa9c0; --line:#263858;
+    --navy:#1d3a69; --gold:#e0b53c; --goldbg:#3a3014; --ok:#4cc29a; --bad:#ff8a73; --chip:#1c2f50;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c182b; --surface:#13233d; --ink:#e8eef7; --muted:#9aa9c0; --line:#263858;
+  --navy:#1d3a69; --gold:#e0b53c; --goldbg:#3a3014; --ok:#4cc29a; --bad:#ff8a73; --chip:#1c2f50;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 15px/1.45 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;margin:0;line-height:1.15}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+header.top{background:var(--navy);color:var(--on-navy);padding:16px 16px 14px;border-bottom:4px solid var(--gold)}
+header.top h1{font-size:22px}
+header.top p{margin:4px 0 0;font-size:13px;opacity:.85}
+main{max-width:760px;margin:0 auto;padding:14px 14px 24px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 140px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:600;min-height:42px}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#1a1405}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.small{padding:5px 10px;min-height:34px;font-size:13px}
+input[type=text],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 10px;min-height:42px}
+textarea{min-height:76px;resize:vertical}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+.card.click{cursor:pointer}
+.card.click:hover{border-color:var(--gold)}
+.name{font-weight:600;font-size:16px}
+.meta{color:var(--muted);font-size:13px;margin-top:2px}
+.chip{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;background:var(--chip);border:1px solid var(--line)}
+.chip.won{background:var(--ok);color:#fff;border-color:var(--ok)}
+.chip.lost{color:var(--bad);border-color:var(--bad);background:transparent}
+.chip.score{background:var(--goldbg);border-color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:26px;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+.bar{height:12px;border-radius:6px;background:var(--chip);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--navy)}
+.note{background:var(--goldbg);border-left:4px solid var(--gold);padding:9px 12px;border-radius:6px;font-size:13.5px;margin:10px 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav.tabs button{flex:1;border:0;background:transparent;padding:10px 2px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;min-height:52px;border-top:3px solid transparent}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-top-color:var(--gold)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);width:min(560px,94vw);max-height:92vh;padding:16px;overflow:auto}
+dialog::backdrop{background:rgba(5,12,25,.6)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crit{display:grid;grid-template-columns:1fr 90px;gap:8px;align-items:center;margin:4px 0}
+.crit label{margin:0}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.check input{width:22px;height:22px;margin-top:1px;flex:none}
+.out{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:14px}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:20}
+@media (min-width:640px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top" style="display:flex;gap:12px;align-items:center">
+  <img src="icons/reborn-icon-180.png" width="46" height="46" alt="ReBoRn shield logo" style="border-radius:10px;flex:none">
+  <div><h1>ReBoRn Growth Desk</h1>
+  <p>Structured for Growth. Built on Results.</p></div>
+</header>
+<main id="view" aria-live="polite"></main>
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" data-tab="pipeline">Prospects</button>
+  <button role="tab" data-tab="score">Scorecard</button>
+  <button role="tab" data-tab="plan">Revenue</button>
+  <button role="tab" data-tab="outreach">Outreach</button>
+  <button role="tab" data-tab="roadmap">Roadmap</button>
+</nav>
+<dialog id="dlg"></dialog>
+
+<script>
+const KEY = "reborn-growth-desk-v1";
+const INDUSTRIES = ["Locksmith","Pressure washing","Gardening and landscaping","Fencing","Foundation and concrete","Towing","Gutter cleaning","Window cleaning","Private chef","Restaurant","Other"];
+const COUNTRIES = ["Antigua and Barbuda","Barbados","Trinidad and Tobago","Dominica","Jamaica","The Bahamas","St. Lucia","Grenada","St. Vincent and the Grenadines","St. Kitts and Nevis","Other"];
+const STATUSES = ["Researched","Verified","Contacted","Replied","Qualified","Proposal","Won","Lost"];
+const WEB = ["To verify","None found after checks","Exists, review quality","Broken or outdated"];
+const CRIT = [["value","Business value"],["visible","Visible opportunity"],["demand","Demand"],["reach","Reachability"],["fit","Delivery fit"]];
+const SRC = "Findyello listing, 9 Oct 2026 (not yet verified)";
+
+const WORDS = {"Locksmith":"locksmith","Pressure washing":"pressure-washing","Gardening and landscaping":"gardening and landscaping","Fencing":"fencing","Foundation and concrete":"foundation and concrete","Towing":"towing","Gutter cleaning":"gutter-cleaning","Window cleaning":"window-cleaning","Private chef":"private chef","Restaurant":"restaurant","Other":"local service"};
+
+const ROADMAP = [
+  ["Days 1 to 15","Diagnose and set a baseline",["Run the Growth Assessment","Get access to profiles and accounts","Record baseline enquiries, calls and reviews","Agree priorities and approvals with the client"]],
+  ["Days 16 to 30","Repair the biggest weaknesses",["Fix contact paths and click-to-call","Add service pages and areas served","Set up an enquiry or quote form","Correct the Google Business profile"]],
+  ["Days 31 to 60","Improve acquisition",["Publish relevant local content","Start approved outreach or advertising","Collect reviews with permission","Check that every enquiry gets a follow-up"]],
+  ["Days 61 to 75","Analyse and refine",["Review lead quality","Find conversion bottlenecks","Adjust campaigns using real data"]],
+  ["Days 76 to 90","Evaluate and plan",["Send the Growth Scorecard","Hold the results review","Agree the next 90-day priorities","Discuss renewal"]]
+];
+const FIRST30 = [
+  ["Days 1 to 3","Choose one niche, one market, one offer"],
+  ["Days 4 to 7","Research and verify 50 prospects with sources"],
+  ["Days 8 to 14","Run a small, compliant outreach test"],
+  ["Days 15 to 21","Hold discovery calls and send proposals"],
+  ["Days 22 to 30","Close and onboard first paying clients"]
+];
+
+function seed(){
+  const mk=(name,industry,country,location,phone)=>({id:uid(),name,industry,country,location,phone,web:"To verify",source:SRC,opportunity:"",scores:{value:0,visible:0,demand:0,reach:0,fit:0},status:"Researched",next:"Verify on a second source",nextDate:"",value:0,created:Date.now()});
+  return [
+    mk("The Key Shop (Evelyn Roach Enterprises Ltd)","Locksmith","Barbados","112 Roebuck Street, St. Michael","246-228-5397"),
+    mk("Rogers & Jordan Ltd","Locksmith","Barbados","Sefton Lodge, Brittons Cross Road, St. Michael","246-426-5444"),
+    mk("Ace Battery Express","Locksmith","Barbados","Welches, St. Michael","246-233-1650"),
+    mk("Dave's Super Cuts Tree Trimming and Felling","Gardening and landscaping","Barbados","Bank Hall, St. Michael","246-238-0386"),
+    mk("Second Nature","Gardening and landscaping","Barbados","Fitts Village, St. James","246-417-5759"),
+    mk("Landmark Nurseries Co Ltd","Gardening and landscaping","Barbados","Portvale, St. James","246-421-5263"),
+    mk("Nature Care Barbados","Gardening and landscaping","Barbados","Christ Church","") ,
+    mk("West Coast Garden Centre","Gardening and landscaping","Barbados","Westmoreland, St. James","246-422-3683"),
+    mk("Auto Rescue","Towing","Barbados","Pine Plantation Road, St. Michael","246-426-9500"),
+    mk("Chin Chin Road Locksmiths","Locksmith","Trinidad and Tobago","Cunupia","868-669-9822"),
+    mk("Rudd Lockmasters & General Services Ltd","Locksmith","Trinidad and Tobago","Mt Hope","868-675-5340"),
+    mk("Mike Phillip Limited","Pressure washing","Trinidad and Tobago","Arouca","868-692-5754"),
+    mk("A's Pressure Washing","Pressure washing","Trinidad and Tobago","","") ,
+    mk("Dick's Pressure Washing","Pressure washing","Trinidad and Tobago","","") ,
+    mk("Jet Clean Power Washing","Pressure washing","Trinidad and Tobago","","") ,
+    mk("Solomon Fontaine","Pressure washing","Dominica","","+1 767-265-7686")
+  ];
+}
+function seedChefs(){
+  const SRC2="Tourism guide or booking platform listing, Oct 2026 (not yet verified)";
+  const mk=(name,industry,country,location)=>({id:uid(),name,industry,country,location,phone:"",web:"To verify",source:SRC2,opportunity:"",scores:{value:0,visible:0,demand:0,reach:0,fit:0},status:"Researched",next:"Check website, Google profile and Facebook",nextDate:"",value:0,created:Date.now()});
+  return [
+    mk("The Perfect Chef (Kahyeme Benjamin)","Private chef","Antigua and Barbuda","Antigua"),
+    mk("Chef Fenella Goldsworthy and Jade","Private chef","Antigua and Barbuda","St. John's"),
+    mk("Chef Alis Ingram","Private chef","Barbados","Oistins"),
+    mk("Chef Diandra","Private chef","Barbados","Saint Michael"),
+    mk("Chef Ellissa","Private chef","The Bahamas",""),
+    mk("Miracles","Restaurant","Antigua and Barbuda","Valley Road, West Coast Village, near Jolly Harbour"),
+    mk("BeachLimerZ","Restaurant","Antigua and Barbuda","Fort James"),
+    mk("Turner's Beach Restaurant","Restaurant","Antigua and Barbuda","Turner's Beach"),
+    mk("Basilico Restaurant","Restaurant","Antigua and Barbuda","")
+  ];
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+let S = {seedV:0,prospects:null,checks:{},plan:{clients:10,fee:600,churn:3,hours:3,rate:15,target:1000000},sender:"",tab:"pipeline",q:"",fstatus:"",sort:"fit",out:{}};
+function load(){
+  try{const r=localStorage.getItem(KEY); if(r){const d=JSON.parse(r); S=Object.assign(S,d);}}catch(e){}
+  if(!Array.isArray(S.prospects)) S.prospects=seed();
+  if(!S.seedV||S.seedV<2){
+    const have=new Set(S.prospects.map(p=>p.name));
+    seedChefs().forEach(p=>{if(!have.has(p.name))S.prospects.push(p)});
+    S.seedV=2;save();
+  }
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({seedV:S.seedV,prospects:S.prospects,checks:S.checks,plan:S.plan,sender:S.sender}))}catch(e){}}
+function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1800)}
+
+function total(p){const v=Object.values(p.scores);return v.every(x=>x>0)?v.reduce((a,b)=>a+b,0):null}
+function chip(st){return `<span class="chip ${st==="Won"?"won":st==="Lost"?"lost":""}">${esc(st)}</span>`}
+
+/* ---------- Pipeline ---------- */
+function vPipeline(){
+  let list=S.prospects.filter(p=>{
+    const q=S.q.toLowerCase();
+    const hit=!q||[p.name,p.industry,p.country,p.location].join(" ").toLowerCase().includes(q);
+    return hit&&(!S.fstatus||p.status===S.fstatus);
+  });
+  list.sort((a,b)=>{
+    if(S.sort==="name")return a.name.localeCompare(b.name);
+    if(S.sort==="new")return b.created-a.created;
+    return (total(b)||0)-(total(a)||0)||a.name.localeCompare(b.name);
+  });
+  const cards=list.length?list.map(p=>{
+    const t=total(p);
+    return `<div class="card click" tabindex="0" role="button" data-edit="${p.id}">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div class="name">${esc(p.name)}</div>${chip(p.status)}
+      </div>
+      <div class="meta">${esc(p.industry)}, ${esc([p.location,p.country].filter(Boolean).join(", "))}</div>
+      <div class="row" style="margin-top:6px"><span class="chip score">${t?t+"/25":"Unscored"}</span><span class="chip">Website: ${esc(p.web)}</span></div>
+      ${p.next?`<div class="meta" style="margin-top:6px">Next: ${esc(p.next)}${p.nextDate?" by "+esc(p.nextDate):""}</div>`:""}
+    </div>`}).join(""):`<div class="empty">No prospects match. Add one, or clear the search and status filter.</div>`;
+  return `
+  <div class="note">These are listings, not confirmed prospects. Verify each business on a second source, use only public contact channels, and never guess emails.</div>
+  <div class="row"><button class="btn gold grow" data-act="add">Add prospect</button><button class="btn" data-act="csv">Export CSV</button></div>
+  <label for="q">Search</label>
+  <input id="q" type="search" value="${esc(S.q)}" placeholder="Name, industry, parish or country">
+  <div class="two">
+    <div><label for="fs">Status</label><select id="fs"><option value="">All</option>${STATUSES.map(s=>`<option ${S.fstatus===s?"selected":""}>${s}</option>`).join("")}</select></div>
+    <div><label for="so">Sort</label><select id="so"><option value="fit" ${S.sort==="fit"?"selected":""}>Best fit first</option><option value="new" ${S.sort==="new"?"selected":""}>Newest first</option><option value="name" ${S.sort==="name"?"selected":""}>Name</option></select></div>
+  </div>
+  <div class="meta" style="margin-top:10px">${list.length} of ${S.prospects.length} prospects</div>
+  ${cards}
+  <div style="margin-top:14px"><button class="btn small danger" data-act="reset">Reset to starter list</button></div>`;
+}
+
+function openForm(id){
+  const p=id?S.prospects.find(x=>x.id===id):{id:"",name:"",industry:INDUSTRIES[0],country:COUNTRIES[0],location:"",phone:"",web:WEB[0],source:"",opportunity:"",scores:{value:0,visible:0,demand:0,reach:0,fit:0},status:"Researched",next:"",nextDate:"",value:0};
+  const opts=(arr,v)=>arr.map(a=>`<option ${a===v?"selected":""}>${esc(a)}</option>`).join("");
+  const sc=n=>[0,1,2,3,4,5].map(i=>`<option value="${i}" ${p.scores[n]===i?"selected":""}>${i===0?"Not scored":i}</option>`).join("");
+  const d=document.getElementById("dlg");
+  d.innerHTML=`<form method="dialog" id="pf" data-id="${p.id}">
+    <h2>${id?"Edit prospect":"Add prospect"}</h2>
+    <label for="f_name">Business name</label><input id="f_name" type="text" value="${esc(p.name)}" required>
+    <div class="two">
+      <div><label for="f_ind">Industry</label><select id="f_ind">${opts(INDUSTRIES,p.industry)}</select></div>
+      <div><label for="f_cty">Country</label><select id="f_cty">${opts(COUNTRIES,p.country)}</select></div>
+    </div>
+    <label for="f_loc">Parish or town</label><input id="f_loc" type="text" value="${esc(p.location)}">
+    <div class="two">
+      <div><label for="f_ph">Public phone or WhatsApp</label><input id="f_ph" type="text" value="${esc(p.phone)}"></div>
+      <div><label for="f_web">Website status</label><select id="f_web">${opts(WEB,p.web)}</select></div>
+    </div>
+    <label for="f_src">Source and date checked</label><input id="f_src" type="text" value="${esc(p.source)}" placeholder="Where you found it and when">
+    <label for="f_opp">Specific, verified opportunity</label><textarea id="f_opp" placeholder="For example: no click-to-call button on the website">${esc(p.opportunity)}</textarea>
+    <h3 style="margin-top:14px;font-size:16px">Fit score (1 to 5 each, max 25)</h3>
+    ${CRIT.map(([k,l])=>`<div class="crit"><label for="s_${k}">${l}</label><select id="s_${k}">${sc(k)}</select></div>`).join("")}
+    <div class="two">
+      <div><label for="f_st">Status</label><select id="f_st">${opts(STATUSES,p.status)}</select></div>
+      <div><label for="f_val">Proposal value, US$ per month</label><input id="f_val" type="number" min="0" value="${p.value||0}"></div>
+    </div>
+    <div class="two">
+      <div><label for="f_next">Next action</label><input id="f_next" type="text" value="${esc(p.next)}"></div>
+      <div><label for="f_nd">Due date</label><input id="f_nd" type="date" value="${esc(p.nextDate)}"></div>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary grow" value="save">Save prospect</button>
+      <button class="btn" value="cancel" formnovalidate>Cancel</button>
+      ${id?`<button class="btn danger" value="delete" formnovalidate>Delete</button>`:""}
+    </div>
+  </form>`;
+  d.showModal();
+  d.querySelector("form").addEventListener("submit",e=>{
+    const v=e.submitter&&e.submitter.value;
+    if(v==="cancel")return;
+    if(v==="delete"){ if(p.id){S.prospects=S.prospects.filter(x=>x.id!==p.id);save();render();toast("Deleted")} return; }
+    const g=i=>document.getElementById(i).value;
+    const name=g("f_name").trim(); if(!name){e.preventDefault();return;}
+    const rec={id:p.id||uid(),name,industry:g("f_ind"),country:g("f_cty"),location:g("f_loc").trim(),phone:g("f_ph").trim(),web:g("f_web"),source:g("f_src").trim(),opportunity:g("f_opp").trim(),
+      scores:Object.fromEntries(CRIT.map(([k])=>[k,parseInt(g("s_"+k),10)||0])),status:g("f_st"),next:g("f_next").trim(),nextDate:g("f_nd"),value:parseFloat(g("f_val"))||0,created:p.created||Date.now()};
+    if(p.id){S.prospects=S.prospects.map(x=>x.id===p.id?rec:x)}else{S.prospects.push(rec)}
+    save();render();toast("Saved");
+  });
+}
+
+function csv(){
+  const head=["Name","Industry","Country","Location","Phone","Website status","Source","Opportunity","Score","Status","Next action","Due","Proposal value monthly"];
+  const q=v=>`"${String(v==null?"":v).replace(/"/g,'""')}"`;
+  const rows=S.prospects.map(p=>[p.name,p.industry,p.country,p.location,p.phone,p.web,p.source,p.opportunity,total(p)||"",p.status,p.next,p.nextDate,p.value].map(q).join(","));
+  const text=[head.map(q).join(","),...rows].join("\n");
+  const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();
+  if(ok)toast("CSV copied to clipboard");
+  else{const d=document.getElementById("dlg");d.innerHTML=`<h2>CSV export</h2><p class="meta">Select all and copy this text into a spreadsheet.</p><textarea style="min-height:260px" readonly>${esc(text)}</textarea><div class="row" style="margin-top:12px"><button class="btn primary" onclick="document.getElementById('dlg').close()">Close</button></div>`;d.showModal()}
+}
+
+/* ---------- Scorecard ---------- */
+function vScore(){
+  const P=S.prospects,n=P.length;
+  const idx=s=>STATUSES.indexOf(s);
+  const reached=i=>P.filter(p=>p.status!=="Lost"&&idx(p.status)>=i).length;
+  const stages=[["Verified",1],["Contacted",2],["Replied",3],["Qualified",4],["Proposal",5],["Won",6]];
+  const lost=P.filter(p=>p.status==="Lost").length;
+  const won=P.filter(p=>p.status==="Won");
+  const mrr=won.reduce((a,p)=>a+(p.value||0),0);
+  const open=P.filter(p=>p.status==="Proposal").reduce((a,p)=>a+(p.value||0),0);
+  const scored=P.filter(p=>total(p)).length;
+  const due=P.filter(p=>p.nextDate&&p.status!=="Won"&&p.status!=="Lost"&&p.nextDate<=new Date().toISOString().slice(0,10)).length;
+  const max=Math.max(1,n);
+  const rate=(a,b)=>b?Math.round(a/b*100)+"%":"-";
+  const bars=stages.map(([l,i],k)=>{const c=reached(i);const prev=k?reached(stages[k-1][1]):n;
+    return `<div style="margin:10px 0"><div class="row" style="justify-content:space-between"><span>${l}</span><span><b>${c}</b> <span class="meta">${k?rate(c,prev)+" of previous":""}</span></span></div><div class="bar"><i style="width:${c/max*100}%"></i></div></div>`}).join("");
+  return `
+  <div class="grid">
+    <div class="stat"><b>${n}</b><span>Prospects tracked</span></div>
+    <div class="stat"><b>${scored}</b><span>Scored</span></div>
+    <div class="stat"><b>${due}</b><span>Actions due or overdue</span></div>
+    <div class="stat"><b>${lost}</b><span>Lost</span></div>
+    <div class="stat"><b>$${open.toLocaleString()}</b><span>Open proposals, per month</span></div>
+    <div class="stat"><b>$${mrr.toLocaleString()}</b><span>Won recurring, per month</span></div>
+    <div class="stat"><b>$${(mrr*12).toLocaleString()}</b><span>Annualised run rate</span></div>
+    <div class="stat"><b>${won.length}</b><span>Clients won</span></div>
+  </div>
+  <div class="card"><h3>Sales funnel</h3>${bars}
+    <div class="meta">Each bar counts prospects that reached that stage or later. Lost prospects are not counted.</div></div>
+  <div class="note">Numbers come only from the prospect records. Cash collected, completed work and delivery risks are not tracked here, so keep those in your own books and mark missing data as missing.</div>`;
+}
+
+/* ---------- Revenue ---------- */
+function vPlan(){
+  const p=S.plan;
+  const mrr=p.clients*p.fee, arr=mrr*12, hrs=p.clients*p.hours, cost=hrs*p.rate, margin=mrr?Math.round((mrr-cost)/mrr*100):0;
+  const lostMo=Math.round(p.clients*p.churn/100*10)/10;
+  const need=p.fee?Math.ceil(p.target/12/p.fee):0, needHrs=need*p.hours;
+  const f=(k,l,min,step)=>`<div><label for="pl_${k}">${l}</label><input id="pl_${k}" data-plan="${k}" type="number" inputmode="decimal" min="${min}" step="${step||1}" value="${p[k]}"></div>`;
+  return `
+  <div class="two">${f("clients","Active clients",0)}${f("fee","Average monthly fee, US$",0,50)}</div>
+  <div class="two">${f("churn","Monthly churn, %",0,0.5)}${f("hours","Delivery hours per client per month",0,0.5)}</div>
+  <div class="two">${f("rate","Delivery cost per hour, US$",0,1)}${f("target","Target annual revenue, US$",0,50000)}</div>
+  <div class="card"><div class="grid">
+    <div class="stat"><b>$${mrr.toLocaleString()}</b><span>Monthly recurring</span></div>
+    <div class="stat"><b>$${arr.toLocaleString()}</b><span>Annualised run rate</span></div>
+    <div class="stat"><b>${hrs.toLocaleString()}</b><span>Delivery hours per month</span></div>
+    <div class="stat"><b>${margin}%</b><span>Margin after delivery cost</span></div>
+  </div></div>
+  <div class="card"><h3>To reach $${p.target.toLocaleString()} a year</h3>
+    <p>You need about <b>${need.toLocaleString()}</b> active clients at $${p.fee.toLocaleString()} a month, which is roughly <b>${needHrs.toLocaleString()}</b> delivery hours a month before sales, onboarding and management.</p>
+    <p>At ${p.churn}% churn you lose about <b>${lostMo}</b> clients a month at ${p.clients} clients, so you must win that many just to stand still.</p></div>
+  <h3 style="margin-top:16px">Pricing to test</h3>
+  <div class="tbl"><table><tr><th>Program</th><th>Setup, US$</th><th>Monthly, US$</th><th></th></tr>
+   <tr><td>Growth Assessment</td><td>150 to 350</td><td>One-time</td><td></td></tr>
+   <tr><td>Local Starter</td><td>200 to 450</td><td>One-time</td><td></td></tr>
+   <tr><td>Foundation</td><td>500 to 900</td><td>400 to 700</td><td><button class="btn small" data-fee="550">Use 550</button></td></tr>
+   <tr><td>Growth</td><td>750 to 1,500</td><td>800 to 1,500</td><td><button class="btn small" data-fee="1150">Use 1,150</button></td></tr>
+   <tr><td>Scale</td><td>1,500 to 3,500</td><td>1,500 to 3,500</td><td><button class="btn small" data-fee="2500">Use 2,500</button></td></tr></table></div>
+  <div class="note">These prices are hypotheses to test, not market averages. Run rate is not cash, profit or a forecast. It ignores setup fees, taxes, refunds and unpaid invoices. Do not sell a Scale Program you cannot deliver.</div>`;
+}
+
+/* ---------- Outreach ---------- */
+function vOutreach(){
+  const o=S.out;
+  const sel=S.prospects.map(p=>`<option value="${p.id}" ${o.pid===p.id?"selected":""}>${esc(p.name)}</option>`).join("");
+  return `
+  <label for="o_p">Prospect</label>
+  <select id="o_p"><option value="">Choose from your list</option>${sel}</select>
+  <label for="o_obs">Specific, verified observation</label>
+  <textarea id="o_obs" placeholder="Something you actually checked, such as: your Google profile has no website link">${esc(o.obs||"")}</textarea>
+  <div class="two"><div><label for="o_me">Your name</label><input id="o_me" type="text" value="${esc(S.sender)}" placeholder="Your name"></div>
+  <div><label for="o_ph">Business phone</label><input id="o_ph" type="text" value="${esc(o.ph!=null?o.ph:"268-734-2833")}"></div></div>
+  <div class="row" style="margin-top:12px"><button class="btn primary grow" data-act="gen">Write message</button></div>
+  <div id="o_out">${o.text?outBlock(o.text):`<div class="empty">Choose a prospect, add one verified observation, then write the message.</div>`}</div>
+  <div class="note">Never claim a business has no website unless you checked its official channels and search results. Do not promise rankings or sales, and stop contacting anyone who asks you to.</div>`;
+}
+function outBlock(t){return `<div class="out" id="o_txt">${esc(t)}</div><div class="row" style="margin-top:8px"><button class="btn" data-act="copy">Copy message</button></div>`}
+function genMsg(){
+  const p=S.prospects.find(x=>x.id===S.out.pid);
+  if(!p){toast("Choose a prospect first");return}
+  const obs=(S.out.obs||"").trim();
+  if(!obs){toast("Add a verified observation first");return}
+  const town=p.location||p.country;
+  const me=S.sender.trim()||"[Your name]";
+  S.out.text=`Subject: Helping ${p.name} get more local enquiries online
+
+Hello ${p.name},
+
+I came across your business while researching ${WORDS[p.industry]||"local service"} providers in ${town}. ReBoRn Marketing Solution Agency helps local businesses improve how customers find and contact them online, through clear websites, accurate Google profiles and simple enquiry systems.
+
+I noticed ${obs.replace(/^[A-Z]/,c=>c.toLowerCase()).replace(/[.]+$/,"")}. I would be glad to suggest a practical, affordable improvement based on your business and goals.
+
+Would you be open to a short conversation? If you would rather not hear from me, just say so and I will not contact you again.
+
+Kind regards,
+${me}
+ReBoRn Marketing Solution Agency${(S.out.ph!=null?S.out.ph:"268-734-2833")?"\n"+(S.out.ph!=null?S.out.ph:"268-734-2833"):""}`;
+  render();
+}
+
+/* ---------- Roadmap ---------- */
+function vRoadmap(){
+  const ck=(id,l)=>`<label class="check"><input type="checkbox" data-ck="${id}" ${S.checks[id]?"checked":""}><span>${esc(l)}</span></label>`;
+  const rm=ROADMAP.map(([d,t,items],i)=>`<div class="card"><h3>${d}</h3><div class="meta">${t}</div>${items.map((x,j)=>ck("rm"+i+"_"+j,x)).join("")}</div>`).join("");
+  const f=FIRST30.map(([d,t],i)=>ck("f30_"+i,d+": "+t)).join("");
+  const done=Object.values(S.checks).filter(Boolean).length;
+  return `
+  <h2>First 30 days</h2>
+  <div class="card">${f}</div>
+  <h2 style="margin-top:18px">90-day Growth Roadmap for each client</h2>
+  <div class="meta">Use as the template for every enrolled client. Strategy follows the client's problem, so skip steps that do not apply.</div>
+  ${rm}
+  <div class="meta">${done} checklist items done in this browser.</div>
+  <div class="note">The program promises a disciplined process, defined work, honest reporting and evidence-based improvement. It does not promise revenue growth.</div>`;
+}
+
+/* ---------- Shell ---------- */
+function render(){
+  const v=document.getElementById("view");
+  const f={pipeline:vPipeline,score:vScore,plan:vPlan,outreach:vOutreach,roadmap:vRoadmap}[S.tab];
+  const ae=document.activeElement, id=ae&&ae.id, pos=ae&&ae.selectionStart;
+  v.innerHTML=f();
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===S.tab));
+  if(id){const el=document.getElementById(id);if(el&&el.tagName!=="SELECT"){el.focus();try{el.setSelectionRange(pos,pos)}catch(e){}}}
+}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-tab]"); if(t){S.tab=t.dataset.tab;render();window.scrollTo(0,0);return}
+  const ed=e.target.closest("[data-edit]"); if(ed){openForm(ed.dataset.edit);return}
+  const fee=e.target.closest("[data-fee]"); if(fee){S.plan.fee=+fee.dataset.fee;save();render();return}
+  const a=e.target.closest("[data-act]"); if(!a)return;
+  const k=a.dataset.act;
+  if(k==="add")openForm();
+  else if(k==="csv")csv();
+  else if(k==="reset"){if(confirm("Replace all prospects with the starter list? Your edits will be lost.")){S.prospects=seed().concat(seedChefs());S.seedV=2;save();render()}}
+  else if(k==="gen")genMsg();
+  else if(k==="copy"){const t=S.out.text||"";const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand("copy")}catch(x){}ta.remove();toast(ok?"Copied":"Select the text and copy it")}
+});
+document.addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-edit]")){e.preventDefault();openForm(e.target.dataset.edit)}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id==="q"){S.q=t.value;render()}
+  else if(t.dataset.plan){S.plan[t.dataset.plan]=parseFloat(t.value)||0;save();render()}
+  else if(t.id==="o_obs"){S.out.obs=t.value}
+  else if(t.id==="o_me"){S.sender=t.value;save()}
+  else if(t.id==="o_ph"){S.out.ph=t.value}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="fs"){S.fstatus=t.value;render()}
+  else if(t.id==="so"){S.sort=t.value;render()}
+  else if(t.id==="o_p"){S.out.pid=t.value;render()}
+  else if(t.dataset.ck){S.checks[t.dataset.ck]=t.checked;save();render()}
+});
+
+load();
+render();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+</script>
+</body>
+</html>
